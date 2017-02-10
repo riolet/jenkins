@@ -33,7 +33,7 @@ RUN curl https://pkg.jenkins.io/redhat-stable/jenkins.repo -o /etc/yum.repos.d/j
     rpm -V $INSTALL_PKGS && \
     yum clean all  && \
     localedef -f UTF-8 -i en_US en_US.UTF-8 && \
-    curl -L https://github.com/openshift/origin/releases/download/v1.3.0/openshift-origin-client-tools-v1.3.0-3ab7af3d097b57f933eccef684a714f2368804e7-linux-64bit.tar.gz | \
+    set -o pipefail && curl -L https://github.com/openshift/origin/releases/download/v1.4.1/openshift-origin-client-tools-v1.4.1-3f9807a-linux-64bit.tar.gz | \
     tar -zx && \
     mv openshift*/oc /usr/local/bin && \
     rm -rf openshift-origin-client-tools-*
@@ -49,8 +49,10 @@ RUN /usr/local/bin/plugins.sh /opt/openshift/base-plugins.txt && \
     touch /opt/openshift/plugins/ssh-credentials.jpi.pinned && \
     touch /opt/openshift/plugins/script-security.jpi.pinned && \
     chown -R 1001:0 /opt/openshift && \
+    rmdir /var/log/jenkins && \
     /usr/local/bin/fix-permissions /opt/openshift && \
-    /usr/local/bin/fix-permissions /var/lib/jenkins
+    /usr/local/bin/fix-permissions /var/lib/jenkins && \
+    /usr/local/bin/fix-permissions /var/log
 
 VOLUME ["/var/lib/jenkins"]
 
